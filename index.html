@@ -101,15 +101,29 @@
         const statusMsg = document.getElementById('statusMessage');
         const btnSubmit = document.getElementById('btnSubmit');
 
+        // Helper moderno para codificar strings con soporte UTF-8 a Base64 sin romper emojis
+        function utoa(str) {
+            return btoa(String.fromCharCode(...new TextEncoder().encode(str)));
+        }
+
+        // Helper moderno para decodificar Base64 conteniendo UTF-8
+        function atou(str) {
+            return new TextDecoder().decode(Uint8Array.from(atob(str), c => c.charCodeAt(0)));
+        }
+
         // Obtener datos actuales de GitHub
         async function getFileContent() {
             const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${FILE_PATH}`;
             const res = await fetch(url, {
-                headers: { "Authorization": `token ${getTk()}`, "Accept": "application/vnd.github.v3+json" }
+                headers: { 
+                    "Authorization": `token ${getTk()}`, 
+                    "Accept": "application/vnd.github.v3+json",
+                    "Cache-Control": "no-cache" // Evita que el navegador cachee resultados viejos
+                }
             });
             if (!res.ok) throw new Error("Error al leer base de datos.");
             const data = await res.json();
-            return { sha: data.sha, content: JSON.parse(atob(data.content)) };
+            return { sha: data.sha, content: JSON.parse(atou(data.content)) };
         }
 
         // Renderizar los resultados con barras estéticas
@@ -129,7 +143,7 @@
                     `;
 
                     const proyectos = content[edificio];
-                    if (Object.keys(proyectos).length === 0) {
+                    if (!proyectos || Object.keys(proyectos).length === 0) {
                         edificioHTML += `<p class="text-xs text-slate-400 italic">Sin votos aún.</p>`;
                     } else {
                         const totalEdificio = Object.values(proyectos).reduce((a, b) => a + b, 0);
@@ -155,6 +169,7 @@
                 }
             } catch (err) {
                 console.error(err);
+                document.getElementById('resultsContainer').innerHTML = `<p class="text-rose-500 text-center py-8 text-sm">Error al cargar la matriz de datos.</p>`;
             }
         }
 
@@ -177,8 +192,16 @@
             btnSubmit.innerText = "Sincronizando con GitHub...";
 
             const edifSeleccionado = document.getElementById('edificio').value;
-            // Modificado para capturar el radio button seleccionado
-            const projSeleccionado = document.querySelector('input[name="proyecto"]:checked').value;
+            const radioChecked = document.querySelector('input[name="proyecto"]:checked');
+            
+            if (!radioChecked) {
+                showStatus("Por favor, selecciona un proyecto.", "bg-amber-50 text-amber-700 border border-amber-200");
+                btnSubmit.disabled = false;
+                btnSubmit.innerText = "Procesar Voto Failsafe";
+                return;
+            }
+            
+            const projSeleccionado = radioChecked.value;
 
             try {
                 const { sha, content } = await getFileContent();
@@ -189,7 +212,7 @@
                 const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${FILE_PATH}`;
                 const bodyJson = {
                     message: `🗳️ Voto anónimo procesado [${edifSeleccionado}]`,
-                    content: btoa(unescape(encodeURIComponent(JSON.stringify(content, null, 2)))),
+                    content: utoa(JSON.stringify(content, null, 2)),
                     sha: sha
                 };
 
@@ -209,15 +232,15 @@
                 }
 
             } catch (error) {
-                showStatus("Error de concurrencia de red. Reintenta en 3 segundos.", "bg-rose-50 text-rose-700 border border-rose-200");
+                showStatus("Error de concurrencia de red o colisión de datos. Reintenta.", "bg-rose-50 text-rose-700 border border-rose-200");
             } finally {
                 btnSubmit.disabled = false;
                 btnSubmit.innerText = "Procesar Voto Failsafe";
             }
         });
 
-        // Cargar los resultados al iniciar la página
-        window.addEventListener('DOMContentLoaded', loadResults);
+        // Cargar los resultados al iniciar la página de inmediato
+        loadResults();
     </script>
 </body>
 </html>
