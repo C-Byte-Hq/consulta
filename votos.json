@@ -8,7 +8,9 @@
     "Poda de árboles y escombros": 3,
     "Cámaras de vigilancia": 1
   },
-  "Edificio 10": {},
+  "Edificio 10": {
+    "Mantenimiento de áreas comunes": 1
+  },
   "Edificio 11": {
     "Mantenimiento de áreas comunes": 34,
     "Sustitución de tuberías": 7,
