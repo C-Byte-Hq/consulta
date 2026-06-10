@@ -9,14 +9,12 @@
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col items-center p-4 md:p-8">
 
     <div class="max-w-4xl w-full bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-100">
-        <!-- Encabezado -->
         <div class="bg-gradient-to-r from-indigo-600 to-violet-700 p-6 md:p-8 text-white text-center">
             <h1 class="text-2xl md:text-3xl font-extrabold mb-2 tracking-tight">🗳️ Control de Votaciones</h1>
             <p class="text-indigo-100 text-sm">Organizado por edificio y proyecto. Sin registros ni logins necesarios.</p>
         </div>
 
         <div class="p-6 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-8">
-            <!-- Formulario -->
             <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
                 <h2 class="text-lg font-bold text-slate-700 mb-4 flex items-center gap-2">
                     <span class="bg-indigo-100 text-indigo-700 w-6 h-6 flex items-center justify-center rounded-full text-xs">1</span>
@@ -37,13 +35,38 @@
                     </div>
 
                     <div>
-                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">¿Por cuál proyecto votas?</label>
-                        <select id="proyecto" required class="w-full p-3 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none transition">
-                            <option value="" disabled selected>Selecciona un proyecto...</option>
-                            <option value="Proyecto 1: Cámaras de Seguridad">📹 Proyecto 1: Cámaras de Seguridad</option>
-                            <option value="Proyecto 2: Remodelación de Fachada">🧱 Proyecto 2: Remodelación de Fachada</option>
-                            <option value="Proyecto 3: Iluminación LED">💡 Proyecto 3: Iluminación LED</option>
-                        </select>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">¿Por cuál proyecto votas?</label>
+                        <div class="space-y-3">
+                            <label class="flex items-start gap-3 p-3 bg-white border border-slate-200 rounded-lg cursor-pointer hover:bg-indigo-50/50 transition">
+                                <input type="radio" name="proyecto" value="Poda de árboles y escombros" required class="mt-1 accent-indigo-600 h-4 w-4">
+                                <span class="text-sm text-slate-700">🌲 Poda de árboles peligrosos y recolección de escombros ecológicos</span>
+                            </label>
+
+                            <label class="flex items-start gap-3 p-3 bg-white border border-slate-200 rounded-lg cursor-pointer hover:bg-indigo-50/50 transition">
+                                <input type="radio" name="proyecto" value="Cercado de alfajol" class="mt-1 accent-indigo-600 h-4 w-4">
+                                <span class="text-sm text-slate-700">🚧 Cerca de alfajol por la camineria del bloque 1 desde la pared de la escuela hasta el nivel del parquecito y cercado en bloque 6 desde la curva casi hasta la línea de taxis</span>
+                            </label>
+
+                            <label class="flex items-start gap-3 p-3 bg-white border border-slate-200 rounded-lg cursor-pointer hover:bg-indigo-50/50 transition">
+                                <input type="radio" name="proyecto" value="Cámaras de vigilancia" class="mt-1 accent-indigo-600 h-4 w-4">
+                                <span class="text-sm text-slate-700">📹 Cámaras de vigilancia externa e internamente</span>
+                            </label>
+
+                            <label class="flex items-start gap-3 p-3 bg-white border border-slate-200 rounded-lg cursor-pointer hover:bg-indigo-50/50 transition">
+                                <input type="radio" name="proyecto" value="Filtraciones en tanques" class="mt-1 accent-indigo-600 h-4 w-4">
+                                <span class="text-sm text-slate-700">💧 Reparación de filtraciones en tanques de agua subterráneo y aéreos</span>
+                            </label>
+
+                            <label class="flex items-start gap-3 p-3 bg-white border border-slate-200 rounded-lg cursor-pointer hover:bg-indigo-50/50 transition">
+                                <input type="radio" name="proyecto" value="Mantenimiento de áreas comunes" class="mt-1 accent-indigo-600 h-4 w-4">
+                                <span class="text-sm text-slate-700">🛠️ Mantenimiento y reparación residencial en áreas comunes de las edificaciones: plomería, albañilería, electricidad, jardinería, herrería, estructura física, entre otros</span>
+                            </label>
+
+                            <label class="flex items-start gap-3 p-3 bg-white border border-slate-200 rounded-lg cursor-pointer hover:bg-indigo-50/50 transition">
+                                <input type="radio" name="proyecto" value="Sustitución de tuberías" class="mt-1 accent-indigo-600 h-4 w-4">
+                                <span class="text-sm text-slate-700">🚰 Sustitución de tuberías de aguas servidas y blancas que están ocasionando filtraciones en la estructura física de las edificaciones</span>
+                            </label>
+                        </div>
                     </div>
 
                     <button type="submit" id="btnSubmit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg shadow-md transition transform active:scale-95 cursor-pointer flex justify-center items-center">
@@ -53,7 +76,6 @@
                 <div id="statusMessage" class="mt-4 p-3 rounded-lg hidden text-center text-sm font-semibold"></div>
             </div>
 
-            <!-- Gráficos -->
             <div>
                 <h2 class="text-lg font-bold text-slate-700 mb-4 flex items-center gap-2">
                     <span class="bg-emerald-100 text-emerald-700 w-6 h-6 flex items-center justify-center rounded-full text-xs">2</span>
@@ -67,12 +89,11 @@
     </div>
 
     <script>
-        // CONFIGURACIÓN DE TU REPOSITORIO (Modifica esto)
+        // CONFIGURACIÓN DE TU REPOSITORIO
         const OWNER = "C-Byte-Hq";
         const REPO = "consulta";
         const FILE_PATH = "votos.json";
         
-        // ⚠️ INSTRUCCIONES DEL TOKEN ABAJO EN EL PASO 3
         const CONFIG_TOKEN = "Z2l0aHViX3BhdF8xMUI3STVZRUEweHFVc0s5bGhwZzJFX1NSajVZSWVtVWg3N0hkbnFvbEhvTmp2cGhCOWFqVjlPdXc0WERtampUdmozSDJaTUhWUzhlYzFsampq"; 
         const getTk = () => atob(CONFIG_TOKEN);
 
@@ -111,7 +132,6 @@
                     if (Object.keys(proyectos).length === 0) {
                         edificioHTML += `<p class="text-xs text-slate-400 italic">Sin votos aún.</p>`;
                     } else {
-                        // Calcular total de votos del edificio para porcentajes reales
                         const totalEdificio = Object.values(proyectos).reduce((a, b) => a + b, 0);
 
                         for (const proj in proyectos) {
@@ -138,6 +158,12 @@
             }
         }
 
+        function showStatus(text, classes) {
+            statusMsg.innerText = text;
+            statusMsg.className = `mt-4 p-3 rounded-lg text-center text-sm font-semibold ${classes}`;
+            statusMsg.classList.remove('hidden');
+        }
+
         // Enviar el voto directamente mediante commit de la API
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -151,21 +177,19 @@
             btnSubmit.innerText = "Sincronizando con GitHub...";
 
             const edifSeleccionado = document.getElementById('edificio').value;
-            const projSeleccionado = document.getElementById('proyecto').value;
+            // Modificado para capturar el radio button seleccionado
+            const projSeleccionado = document.querySelector('input[name="proyecto"]:checked').value;
 
             try {
-                // Leer versión más fresca para evitar colisiones de concurrencia
                 const { sha, content } = await getFileContent();
 
-                // Sumar voto a la matriz relacional
                 if (!content[edifSeleccionado]) content[edifSeleccionado] = {};
                 content[edifSeleccionado][projSeleccionado] = (content[edifSeleccionado][projSeleccionado] || 0) + 1;
 
-                // Escribir de vuelta a GitHub vía API commit
                 const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${FILE_PATH}`;
                 const bodyJson = {
                     message: `🗳️ Voto anónimo procesado [${edifSeleccionado}]`,
-                    content: btoa(JSON.stringify(content, null, 2)),
+                    content: btoa(unescape(encodeURIComponent(JSON.stringify(content, null, 2)))),
                     sha: sha
                 };
 
@@ -192,14 +216,8 @@
             }
         });
 
-        function showStatus(msg, classes) {
-            statusMsg.innerText = msg;
-            statusMsg.className = `mt-4 p-3 rounded-lg text-center text-sm font-semibold ${classes}`;
-            statusMsg.classList.remove('hidden');
-        }
-
-        // Carga inicial
-        loadResults();
+        // Cargar los resultados al iniciar la página
+        window.addEventListener('DOMContentLoaded', loadResults);
     </script>
 </body>
 </html>
