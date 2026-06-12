@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🗳️ Votación Comunitaria para propuesta de proyecto a elegir el 12 de Julio del 2026</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col items-center p-4 md:p-8">
 
-    <div class="max-w-4xl w-full bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-100">
+    <div class="max-w-5xl w-full bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-100">
         <div class="bg-gradient-to-r from-indigo-600 to-violet-700 p-6 md:p-8 text-white text-center">
             <h1 class="text-2xl md:text-3xl font-extrabold mb-2 tracking-tight">🗳️ Control de Votaciones</h1>
             <p class="text-indigo-100 text-sm">Votación Comunitaria para propuesta de proyecto a elegir el 12 de Julio del 2026 de la urbanizacion Simon Bolivar.</p>
@@ -16,63 +17,76 @@
 
         <div class="p-6 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-8">
             <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
-                <h2 class="text-lg font-bold text-slate-700 mb-4 flex items-center gap-2">
-                    <span class="bg-indigo-100 text-indigo-700 w-6 h-6 flex items-center justify-center rounded-full text-xs">1</span>
-                    Registrar Voto
-                </h2>
+                <div id="contenedorVotacionAbierta">
+                    <h2 class="text-lg font-bold text-slate-700 mb-4 flex items-center gap-2">
+                        <span class="bg-indigo-100 text-indigo-700 w-6 h-6 flex items-center justify-center rounded-full text-xs">1</span>
+                        Registrar Voto
+                    </h2>
 
-                <form id="voteForm" class="space-y-5">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">¿A qué edificio perteneces?</label>
-                        <select id="edificio" required class="w-full p-3 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none transition">
-                            <option value="" disabled selected>Selecciona tu edificio...</option>
-                            <option value="Edificio 8">🏢 Edificio 8</option>
-                            <option value="Edificio 9">🏢 Edificio 9</option>
-                            <option value="Edificio 10">🏢 Edificio 10</option>
-                            <option value="Edificio 11">🏢 Edificio 11</option>
-                            <option value="Edificio 12">🏢 Edificio 12</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">¿Por cuál proyecto votas?</label>
-                        <div class="space-y-3">
-                            <label class="flex items-start gap-3 p-3 bg-white border border-slate-200 rounded-lg cursor-pointer hover:bg-indigo-50/50 transition">
-                                <input type="radio" name="proyecto" value="Poda de árboles y escombros" required class="mt-1 accent-indigo-600 h-4 w-4">
-                                <span class="text-sm text-slate-700">🌲 Poda de árboles peligrosos y recolección de escombros ecológicos</span>
-                            </label>
-
-                            <label class="flex items-start gap-3 p-3 bg-white border border-slate-200 rounded-lg cursor-pointer hover:bg-indigo-50/50 transition">
-                                <input type="radio" name="proyecto" value="Cercado de alfajol" class="mt-1 accent-indigo-600 h-4 w-4">
-                                <span class="text-sm text-slate-700">🚧 Cerca de alfajol por la camineria del bloque 1 desde la pared de la escuela hasta el nivel del parquecito y cercado en bloque 6 desde la curva casi hasta la línea de taxis</span>
-                            </label>
-
-                            <label class="flex items-start gap-3 p-3 bg-white border border-slate-200 rounded-lg cursor-pointer hover:bg-indigo-50/50 transition">
-                                <input type="radio" name="proyecto" value="Cámaras de vigilancia" class="mt-1 accent-indigo-600 h-4 w-4">
-                                <span class="text-sm text-slate-700">📹 Cámaras de vigilancia externa e internamente</span>
-                            </label>
-
-                            <label class="flex items-start gap-3 p-3 bg-white border border-slate-200 rounded-lg cursor-pointer hover:bg-indigo-50/50 transition">
-                                <input type="radio" name="proyecto" value="Filtraciones en tanques" class="mt-1 accent-indigo-600 h-4 w-4">
-                                <span class="text-sm text-slate-700">💧 Reparación de filtraciones en tanques de agua subterráneo y aéreos</span>
-                            </label>
-
-                            <label class="flex items-start gap-3 p-3 bg-white border border-slate-200 rounded-lg cursor-pointer hover:bg-indigo-50/50 transition">
-                                <input type="radio" name="proyecto" value="Mantenimiento de áreas comunes" class="mt-1 accent-indigo-600 h-4 w-4">
-                                <span class="text-sm text-slate-700">🛠️ Mantenimiento y reparación residencial en áreas comunes de las edificaciones: plomería, albañilería, electricidad, jardinería, herrería, estructura física, entre otros</span>
-                            </label>
-
-                            <label class="flex items-start gap-3 p-3 bg-white border border-slate-200 rounded-lg cursor-pointer hover:bg-indigo-50/50 transition">
-                                <input type="radio" name="proyecto" value="Sustitución de tuberías" class="mt-1 accent-indigo-600 h-4 w-4">
-                                <span class="text-sm text-slate-700">🚰 Sustitución de tuberías de aguas servidas y blancas que están ocasionando filtraciones en la estructura física de las edificaciones</span>
-                            </label>
+                    <form id="voteForm" class="space-y-5">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">¿A qué edificio perteneces?</label>
+                            <select id="edificio" required class="w-full p-3 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none transition">
+                                <option value="" disabled selected>Selecciona tu edificio...</option>
+                                <option value="Edificio 8">🏢 Edificio 8</option>
+                                <option value="Edificio 9">🏢 Edificio 9</option>
+                                <option value="Edificio 10">🏢 Edificio 10</option>
+                                <option value="Edificio 11">🏢 Edificio 11</option>
+                                <option value="Edificio 12">🏢 Edificio 12</option>
+                            </select>
                         </div>
-                    </div>
 
-                    <button type="submit" id="btnSubmit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg shadow-md transition transform active:scale-95 cursor-pointer flex justify-center items-center">
-                        <span>Procesar Voto Failsafe</span>
-                    </button>
-                </form>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">¿Por cuál proyecto votas?</label>
+                            <div class="space-y-3">
+                                <label class="flex items-start gap-3 p-3 bg-white border border-slate-200 rounded-lg cursor-pointer hover:bg-indigo-50/50 transition">
+                                    <input type="radio" name="proyecto" value="Poda de árboles y escombros" required class="mt-1 accent-indigo-600 h-4 w-4">
+                                    <span class="text-sm text-slate-700">🌲 Poda de árboles peligrosos y recolección de escombros ecológicos</span>
+                                </label>
+
+                                <label class="flex items-start gap-3 p-3 bg-white border border-slate-200 rounded-lg cursor-pointer hover:bg-indigo-50/50 transition">
+                                    <input type="radio" name="proyecto" value="Cercado de alfajol" class="mt-1 accent-indigo-600 h-4 w-4">
+                                    <span class="text-sm text-slate-700">🚧 Cerca de alfajol por la camineria del bloque 1 desde la pared de la escuela hasta el nivel del parquecito y cercado en bloque 6 desde la curva casi hasta la línea de taxis</span>
+                                </label>
+
+                                <label class="flex items-start gap-3 p-3 bg-white border border-slate-200 rounded-lg cursor-pointer hover:bg-indigo-50/50 transition">
+                                    <input type="radio" name="proyecto" value="Cámaras de vigilancia" class="mt-1 accent-indigo-600 h-4 w-4">
+                                    <span class="text-sm text-slate-700">📹 Cámaras de vigilancia externa e internamente</span>
+                                </label>
+
+                                <label class="flex items-start gap-3 p-3 bg-white border border-slate-200 rounded-lg cursor-pointer hover:bg-indigo-50/50 transition">
+                                    <input type="radio" name="proyecto" value="Filtraciones en tanques" class="mt-1 accent-indigo-600 h-4 w-4">
+                                    <span class="text-sm text-slate-700">💧 Reparación de filtraciones en tanques de agua subterráneo y aéreos</span>
+                                </label>
+
+                                <label class="flex items-start gap-3 p-3 bg-white border border-slate-200 rounded-lg cursor-pointer hover:bg-indigo-50/50 transition">
+                                    <input type="radio" name="proyecto" value="Mantenimiento de áreas comunes" class="mt-1 accent-indigo-600 h-4 w-4">
+                                    <span class="text-sm text-slate-700">🛠️ Mantenimiento y reparación residencial en áreas comunes de las edificaciones: plomería, albañilería, electricidad, jardinería, herrería, estructura física, entre otros</span>
+                                </label>
+
+                                <label class="flex items-start gap-3 p-3 bg-white border border-slate-200 rounded-lg cursor-pointer hover:bg-indigo-50/50 transition">
+                                    <input type="radio" name="proyecto" value="Sustitución de tuberías" class="mt-1 accent-indigo-600 h-4 w-4">
+                                    <span class="text-sm text-slate-700">🚰 Sustitución de tuberías de aguas servidas y blancas que están ocasionando filtraciones en la estructura física de las edificaciones</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <button type="submit" id="btnSubmit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg shadow-md transition transform active:scale-95 cursor-pointer flex justify-center items-center">
+                            <span>Procesar Voto Failsafe</span>
+                        </button>
+                    </form>
+                </div>
+
+                <div id="contenedorVotacionCerrada" class="hidden text-center py-12 px-4">
+                    <div class="inline-flex p-4 bg-rose-100 text-rose-700 rounded-full mb-4 animate-bounce">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m0 0v2m0-2h2m-2 0H10m11-3V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2h14a2 2 0 002-2zm-3 0H6a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v8a2 2 0 01-2 2z" />
+                        </svg>
+                    </div>
+                    <h2 class="text-2xl font-black text-slate-800 mb-2">Votación Finalizada</h2>
+                    <p class="text-sm text-slate-500 max-w-sm mx-auto">El proceso de recepción de sufragios ha concluido formalmente. A continuación se presentan los resultados oficiales definitivos.</p>
+                </div>
+
                 <div id="statusMessage" class="mt-4 p-3 rounded-lg hidden text-center text-sm font-semibold"></div>
             </div>
 
@@ -82,6 +96,11 @@
                         <h2 class="text-sm font-bold tracking-wider uppercase text-slate-400">🗳️ Totalización General</h2>
                         <span id="globalTotalVotos" class="bg-emerald-500 text-slate-950 font-black px-3 py-1 rounded-md text-sm shadow-sm">0 Votos</span>
                     </div>
+
+                    <div class="mb-5 bg-slate-900/50 p-3 rounded-xl border border-slate-700/40">
+                        <canvas id="graficoGeneral" class="max-h-64"></canvas>
+                    </div>
+
                     <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Proyectos más votados (General):</h3>
                     <div id="rankingProyectosContainer" class="space-y-2.5 text-xs">
                         <p class="text-slate-500 italic py-2">Procesando totales...</p>
@@ -102,35 +121,39 @@
     </div>
 
     <script>
+        // VARIABLE DE CONTROL: Cambia a 'false' si deseas abrirla de nuevo.
+        const votacionFinalizada = true; 
+
         // CONFIGURACIÓN DE TU REPOSITORIO
         const OWNER = "C-Byte-Hq";
         const REPO = "consulta";
         const FILE_PATH = "votos.json";
         
-        // Token Clásico permanente provisto cifrado en Base64
-        // Dividimos la cadena Base64 en dos partes para engañar al escáner de GitHub
         const PARTE_UNO = "Z2hwXzZxZEx0VlBkZ2xVUUdaNFdH";
         const PARTE_DOS = "Z0lGaURUR1BIS2o4djRSNTZ4NQ==";
-
-        // Las unimos dinámicamente en memoria al ejecutar el código
         const CONFIG_TOKEN = PARTE_UNO + PARTE_DOS; 
         const getTk = () => atob(CONFIG_TOKEN);
 
         const form = document.getElementById('voteForm');
         const statusMsg = document.getElementById('statusMessage');
         const btnSubmit = document.getElementById('btnSubmit');
+        
+        let miGraficoGlobal = null;
 
-        // Helper para codificar strings con soporte UTF-8 a Base64 sin romper emojis
+        // Validar e inicializar la interfaz según el estado de finalización
+        if (votacionFinalizada) {
+            document.getElementById('contenedorVotacionAbierta').classList.add('hidden');
+            document.getElementById('contenedorVotacionCerrada').classList.remove('hidden');
+        }
+
         function utoa(str) {
             return btoa(String.fromCharCode(...new TextEncoder().encode(str)));
         }
 
-        // Helper para decodificar Base64 conteniendo UTF-8
         function atou(str) {
             return new TextDecoder().decode(Uint8Array.from(atob(str), c => c.charCodeAt(0)));
         }
 
-        // Obtener datos actuales de GitHub sin provocar bloqueos de CORS
         async function getFileContent() {
             const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${FILE_PATH}?t=${Date.now()}`;
             const res = await fetch(url, {
@@ -144,12 +167,58 @@
             return { sha: data.sha, content: JSON.parse(atou(data.content)) };
         }
 
-        // Renderizar los resultados con barras estéticas y calcular totales globales
+        // Renderizar gráficos e interfaces informativas
+        function renderChart(labels, data) {
+            const ctx = document.getElementById('graficoGeneral').getContext('2d');
+            
+            // Si el gráfico ya existe, lo destruimos para evitar duplicaciones visuales al refrescar
+            if (miGraficoGlobal) {
+                miGraficoGlobal.destroy();
+            }
+
+            miGraficoGlobal = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels.map(l => l.length > 25 ? l.substring(0, 25) + '...' : l),
+                    datasets: [{
+                        label: 'Votos Totales',
+                        data: data,
+                        backgroundColor: 'rgba(99, 102, 241, 0.85)',
+                        borderColor: 'rgb(129, 140, 248)',
+                        borderWidth: 1,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                title: function(context) { return labels[context[0].dataIndex]; }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { color: 'rgba(51, 65, 85, 0.3)' },
+                            ticks: { color: '#94a3b8', stepSize: 1 }
+                        },
+                        y: {
+                            grid: { display: false },
+                            ticks: { color: '#e2e8f0', font: { size: 10 } }
+                        }
+                    }
+                }
+            });
+        }
+
         async function loadResults() {
             try {
                 const { content } = await getFileContent();
                 
-                // Elementos del DOM para la nueva funcionalidad
                 const container = document.getElementById('resultsContainer');
                 const rankingContainer = document.getElementById('rankingProyectosContainer');
                 const globalTotalBadge = document.getElementById('globalTotalVotos');
@@ -160,7 +229,6 @@
                 let totalVotosGlobales = 0;
                 const mapeoProyectosConsolidados = {};
 
-                // Render por edificio y extracción de métricas consolidadas
                 for (const edificio in content) {
                     let edificioHTML = `
                         <div class="bg-white border border-slate-100 shadow-sm rounded-xl p-4 mb-2">
@@ -180,7 +248,6 @@
                             const numVotos = proyectos[proj];
                             const porcentaje = totalEdificio > 0 ? Math.round((numVotos / totalEdificio) * 100) : 0;
                             
-                            // Acumular métricas para la nueva sección global
                             totalVotosGlobales += numVotos;
                             mapeoProyectosConsolidados[proj] = (mapeoProyectosConsolidados[proj] || 0) + numVotos;
 
@@ -201,12 +268,14 @@
                     container.innerHTML += edificioHTML;
                 }
 
-                // Actualizar contador del badge global
                 globalTotalBadge.innerText = `${totalVotosGlobales} Votos`;
 
-                // Procesar e imprimir la sumatoria de proyectos ordenados de mayor a menor
                 const proyectosOrdenados = Object.entries(mapeoProyectosConsolidados)
-                    .sort((a, b) => b[1] - a[1]); // Orden descendente por cantidad de votos
+                    .sort((a, b) => b[1] - a[1]);
+
+                // Preparar arreglos de datos para alimentar el gráfico
+                const chartLabels = [];
+                const chartData = [];
 
                 if (proyectosOrdenados.length === 0) {
                     rankingContainer.innerHTML = `<p class="text-slate-500 italic py-1">No se registran tendencias globales aún.</p>`;
@@ -215,6 +284,9 @@
                         const porcentajeGlobal = totalVotosGlobales > 0 ? Math.round((votosTotales / totalVotosGlobales) * 100) : 0;
                         const medalColor = indice === 0 ? 'text-amber-400' : (indice === 1 ? 'text-slate-300' : 'text-amber-700');
                         
+                        chartLabels.push(proyectoNombre);
+                        chartData.push(votosTotales);
+
                         rankingContainer.innerHTML += `
                             <div class="flex items-center justify-between bg-slate-800/60 p-2 rounded border border-slate-700/50">
                                 <div class="flex items-center gap-2 max-w-[70%]">
@@ -230,6 +302,9 @@
                     });
                 }
 
+                // Dibujar gráfico con los datos consolidados extraídos
+                renderChart(chartLabels, chartData);
+
             } catch (err) {
                 console.error(err);
                 document.getElementById('resultsContainer').innerHTML = `<p class="text-rose-500 text-center py-8 text-sm">Error al cargar la matriz de datos.</p>`;
@@ -242,9 +317,14 @@
             statusMsg.classList.remove('hidden');
         }
 
-        // Enviar el voto directamente mediante commit de la API
+        // Listener del Formulario (Solo actúa si no está bloqueada)
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
+
+            if (votacionFinalizada) {
+                showStatus("La votación ya ha concluido. No se aceptan más envíos.", "bg-rose-50 text-rose-700 border border-rose-200");
+                return;
+            }
 
             if (localStorage.getItem(`voto_${REPO}`)) {
                 showStatus("Ya has registrado un voto desde este dispositivo.", "bg-amber-50 text-amber-700 border border-amber-200");
@@ -302,7 +382,6 @@
             }
         });
 
-        // Cargar los resultados al iniciar la página de inmediato
         loadResults();
     </script>
 </body>
