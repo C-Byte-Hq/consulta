@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -6,13 +7,62 @@
     <title>🗳️ Votación Comunitaria para propuesta de proyecto a elegir el 12 de Julio del 2026</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        /* ==========================================================================
+           CONFIGURACIÓN ESPECIAL DE IMPRESIÓN (Mantiene los resultados perfectos en papel/PDF)
+           ========================================================================== */
+        @media print {
+            body {
+                background-color: #ffffff !important;
+                color: #000000 !important;
+                padding: 0 !important;
+            }
+            /* Ocultar elementos innecesarios en el papel o PDF */
+            #contenedorVotacionAbierta, 
+            #contenedorVotacionCerrada, 
+            #statusMessage,
+            .no-imprimir {
+                display: none !important;
+            }
+            /* Forzar que el contenedor use todo el ancho de la hoja */
+            .max-w-5xl {
+                max-width: 100% !important;
+                box-shadow: none !important;
+                border: none !important;
+            }
+            /* Ajustar rejilla a una sola columna limpia en papel */
+            .grid {
+                display: block !important;
+            }
+            /* Forzar fondos de color de las barras de progreso al imprimir */
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            /* Evitar romper bloques de edificios a mitad de página */
+            .bg-white.border {
+                page-break-inside: avoid !important;
+                margin-bottom: 15px !important;
+            }
+        }
+    </style>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col items-center p-4 md:p-8">
 
     <div class="max-w-5xl w-full bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-100">
-        <div class="bg-gradient-to-r from-indigo-600 to-violet-700 p-6 md:p-8 text-white text-center">
+        <div class="bg-gradient-to-r from-indigo-600 to-violet-700 p-6 md:p-8 text-white text-center relative">
             <h1 class="text-2xl md:text-3xl font-extrabold mb-2 tracking-tight">🗳️ Control de Votaciones</h1>
             <p class="text-indigo-100 text-sm">Votación Comunitaria para propuesta de proyecto a elegir el 12 de Julio del 2026 de la urbanizacion Simon Bolivar.</p>
+            
+            <div class="mt-4 no-imprimir">
+                <button onclick="window.print()" class="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold py-2 px-4 rounded-lg text-sm shadow-md transition transform active:scale-95 cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                    </svg>
+                    Descargar PDF / Imprimir Resultados
+                </button>
+            </div>
         </div>
 
         <div class="p-6 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -121,7 +171,9 @@
     </div>
 
     <script>
-        // VARIABLE DE CONTROL: Cambia a 'false' si deseas abrirla de nuevo.
+        // VARIABLE DE CONTROL CENTRALIZADA: 
+        // Cambia a 'true' para finalizar la votación y ocultar el formulario.
+        // Cambia a 'false' si necesitas volver a abrirla temporalmente.
         const votacionFinalizada = true; 
 
         // CONFIGURACIÓN DE TU REPOSITORIO
@@ -140,7 +192,7 @@
         
         let miGraficoGlobal = null;
 
-        // Validar e inicializar la interfaz según el estado de finalización
+        // Comportamiento del renderizado inicial según el estado de la votación
         if (votacionFinalizada) {
             document.getElementById('contenedorVotacionAbierta').classList.add('hidden');
             document.getElementById('contenedorVotacionCerrada').classList.remove('hidden');
@@ -167,11 +219,10 @@
             return { sha: data.sha, content: JSON.parse(atou(data.content)) };
         }
 
-        // Renderizar gráficos e interfaces informativas
+        // Dibuja el gráfico de Chart.js con configuraciones legibles
         function renderChart(labels, data) {
             const ctx = document.getElementById('graficoGeneral').getContext('2d');
             
-            // Si el gráfico ya existe, lo destruimos para evitar duplicaciones visuales al refrescar
             if (miGraficoGlobal) {
                 miGraficoGlobal.destroy();
             }
@@ -273,7 +324,6 @@
                 const proyectosOrdenados = Object.entries(mapeoProyectosConsolidados)
                     .sort((a, b) => b[1] - a[1]);
 
-                // Preparar arreglos de datos para alimentar el gráfico
                 const chartLabels = [];
                 const chartData = [];
 
@@ -302,7 +352,6 @@
                     });
                 }
 
-                // Dibujar gráfico con los datos consolidados extraídos
                 renderChart(chartLabels, chartData);
 
             } catch (err) {
@@ -317,14 +366,9 @@
             statusMsg.classList.remove('hidden');
         }
 
-        // Listener del Formulario (Solo actúa si no está bloqueada)
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
-
-            if (votacionFinalizada) {
-                showStatus("La votación ya ha concluido. No se aceptan más envíos.", "bg-rose-50 text-rose-700 border border-rose-200");
-                return;
-            }
+            if (votacionFinalizada) return;
 
             if (localStorage.getItem(`voto_${REPO}`)) {
                 showStatus("Ya has registrado un voto desde este dispositivo.", "bg-amber-50 text-amber-700 border border-amber-200");
